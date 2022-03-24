@@ -11,6 +11,7 @@ export default function (context, options = {}) {
         //console.log("should have pic");
         //console.log(shouldHavePic);
         if (shouldHavePic === 1) {
+          //console.log("bug1");
           const ruleError = new RuleError("虚假的如下图", {
             index: shouldHavePicIndex, // padding of index
           });
@@ -19,18 +20,30 @@ export default function (context, options = {}) {
         shouldHavePicIndex = matches.index;
         shouldHavePic = 1;
         problemNode = node;
-      } else {
-        return;
       }
     },
     [Syntax.Image](node) {
+      //console.log("found Image!");
+      //console.log(node)
+      shouldHavePic = 2;
+      //console.log(shouldHavePic);
+    },
+    [Syntax.CodeBlock](node) {
+      //console.log("found CodeBlock!");
+      //console.log(node)
+      shouldHavePic = 2;
+      //console.log(shouldHavePic);
+    },
+    [Syntax.Image](node) {
       //console.log("found pic!");
+      //console.log(node)
       shouldHavePic = 2;
       //console.log(shouldHavePic);
     },
     [Syntax.Header](node) {
         if (shouldHavePic === 1) {
-            const ruleError = new RuleError("虚假的如下图？", {
+            //console.log("bug2");
+            const ruleError = new RuleError("虚假的如下图", {
               index: shouldHavePicIndex, // padding of index
             });
             report(problemNode, ruleError);
@@ -39,7 +52,8 @@ export default function (context, options = {}) {
     },
     [Syntax.Document](node) {
       if (shouldHavePic === 1) {
-        const ruleError = new RuleError("虚假的如下图？", {
+        //console.log("bug3");
+        const ruleError = new RuleError("虚假的如下图", {
           index: shouldHavePicIndex, // padding of index
         });
         report(problemNode, ruleError);
